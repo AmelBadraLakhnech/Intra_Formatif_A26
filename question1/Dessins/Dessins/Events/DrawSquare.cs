@@ -1,4 +1,6 @@
-﻿namespace Dessins.Events
+﻿using System.Drawing;
+
+namespace Dessins.Events
 {
     public class DrawSquare : DrawingEvent
     {
