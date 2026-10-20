@@ -26,22 +26,49 @@ export default function Home() {
     .withUrl('http://localhost:5282/hubs/pizza')
     .build();
 
-    // TODO: Mettre isConnected à true seulement une fois que la connection au Hub est faite
-    setIsConnected(true);
+    newHubConnection.on("UpdateNbUsers", (nbUsers : number) => {
+      setUserCount(nbUsers);
+    });
+
+    newHubConnection.on("UpdateMoney", (money : number) =>{
+      setMoney(money);
+    })
+
+    newHubConnection.on("UpdateNbPizzasAndMoney", (nbPizzas : number, money : number) =>{
+      setNbPizzas(nbPizzas)
+      setMoney(money)
+    })
+
+    newHubConnection.on("UpdatePizzaPrice", (price : number) =>{
+      setPizzaPrice(price);
+    })
+    
+    newHubConnection
+    .start()
+    .then (() => {
+      console.log("Live Connection")
+      setIsConnected(true)
+    }).catch(err => console.log(err))
+
+    setHubConnection(newHubConnection)
   }
 
   function selectChoice(selectedChoice:number) {
     setSelectedChoice(selectedChoice);
+    hubConnection?.invoke("SelectChoice", selectedChoice)
   }
 
   function unselectChoice() {
+    hubConnection?.invoke("UnselectChoice", selectedChoice);
     setSelectedChoice(-1);
   }
 
   function addMoney() {
+    hubConnection?.invoke("AddMoney", selectedChoice)
   }
 
   function buyPizza() {
+    hubConnection?.invoke("BuyPizza", selectedChoice)
   }
 
   return (
